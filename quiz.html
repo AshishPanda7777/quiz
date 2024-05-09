@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizMaster</title>
+    <style>
+        /* styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.quiz-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+}
+
+#question-container {
+    margin-bottom: 20px;
+}
+
+#choice-buttons button {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#feedback-container {
+    margin-bottom: 20px;
+}
+
+#submit-button, #restart-button {
+    display: block;
+    margin: 0 auto 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#submit-button:hover, #restart-button:hover {
+    background-color: #0056b3;
+}
+
+#score-container {
+    text-align: center;
+}
+
+#score {
+    font-weight: bold;
+}
+
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div id="question-container">
+            <p id="question-text"></p>
+            <div id="choice-buttons">
+                
+            </div>
+        </div>
+        <div id="feedback-container">
+            <p id="feedback-text"></p>
+        </div>
+        <button id="submit-button">Submit Answer</button>
+        <div id="score-container">
+            <p>Score: <span id="score">0</span></p>
+        </div>
+        <button id="restart-button">Restart Quiz</button>
+    </div>
+
+    <script>
+        // quiz.js
+
+const questions = [
+{
+    question: "What is the capital of France?",
+    choices: ["Paris", "London", "Berlin", "Rome"],
+    correctAnswer: "Paris"
+},
+{
+    question: "Which planet is known as the Red Planet?",
+    choices: ["Earth", "Mars", "Jupiter", "Saturn"],
+    correctAnswer: "Mars"
+},
+// Add more questions as needed
+];
+
+let currentQuestionIndex = 0;
+let score = 0;
+
+const questionText = document.getElementById('question-text');
+const choiceButtons = document.getElementById('choice-buttons');
+const feedbackText = document.getElementById('feedback-text');
+const scoreDisplay = document.getElementById('score');
+
+function showQuestion(question) {
+questionText.innerText = question.question;
+choiceButtons.innerHTML = '';
+question.choices.forEach(choice => {
+    const button = document.createElement('button');
+    button.innerText = choice;
+    button.classList.add('choice');
+    button.addEventListener('click', () => selectAnswer(choice));
+    choiceButtons.appendChild(button);
+});
+}
+
+function selectAnswer(selectedChoice) {
+const currentQuestion = questions[currentQuestionIndex];
+if (selectedChoice === currentQuestion.correctAnswer) {
+    feedbackText.innerText = "Correct!";
+    score++;
+} else {
+    feedbackText.innerText = "Incorrect!";
+}
+scoreDisplay.innerText = score;
+document.querySelectorAll('.choice').forEach(button => {
+    button.disabled = true;
+});
+document.getElementById('submit-button').disabled = true;
+}
+
+function nextQuestion() {
+currentQuestionIndex++;
+if (currentQuestionIndex < questions.length) {
+    showQuestion(questions[currentQuestionIndex]);
+    feedbackText.innerText = "";
+    document.getElementById('submit-button').disabled = false;
+} else {
+    endQuiz();
+}
+}
+
+function endQuiz() {
+questionText.innerText = "Quiz Complete!";
+choiceButtons.innerHTML = '';
+feedbackText.innerText = `Final Score: ${score}/${questions.length}`;
+document.getElementById('submit-button').style.display = 'none';
+document.getElementById('restart-button').style.display = 'block';
+}
+
+document.getElementById('submit-button').addEventListener('click', nextQuestion);
+document.getElementById('restart-button').addEventListener('click', () => {
+currentQuestionIndex = 0;
+score = 0;
+showQuestion(questions[currentQuestionIndex]);
+scoreDisplay.innerText = score;
+document.getElementById('submit-button').style.display = 'block';
+document.getElementById('restart-button').style.display = 'none';
+});
+
+showQuestion(questions[currentQuestionIndex]);
+
+    </script>
+</body>
+</html>
